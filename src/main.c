@@ -101,7 +101,7 @@ void main(void)
 
     // Get latest state and draw on screen, then prompt player for move if their turn
     if (getStateFromServer()) {
-#if defined(BUILD_COLECO) || defined(BUILD_NES) || defined(BUILD_SMS)
+#if defined(BUILD_COLECO) || defined(BUILD_NES) || defined(BUILD_SMS) || defined(__H89__)
       /*
         The ColecoVision has no back buffer (1K of RAM), so showGameScreen()
         repaints the table straight to VRAM. Every server poll would otherwise
@@ -121,6 +121,10 @@ void main(void)
         change has to queue behind. Its state is an ordinary object in WRAM.
         So is the Master System's; its VDP takes a table's worth of writes
         easily, but there is no point shipping an unchanged one every poll.
+
+        The H89's H19 terminal is on a 9600 baud line. Its renderer sends only
+        the cells that differ, so an unchanged repaint costs no bytes, but it
+        still re-sweeps the active player's highlight; skip it.
       */
       {
         static unsigned int lastDrawnSum = 1; // != any first real sum
