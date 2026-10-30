@@ -11,21 +11,6 @@ All game logic lives on the server. Clients poll `/state`, render it, and send
 back server-supplied 2-character move codes — so the betting UI never needs
 client-side poker rules.
 
-## Platform status
-
-| Platform | Status | Build | Output |
-|----------|--------|-------|--------|
-| Apple II | ✅ playable | `make apple2` | `r2r/apple2/texas.po` (boots straight into the game) |
-| CoCo 1/2/3 | ✅ playable | `make coco-dist` | `r2r/coco/texas.dsk` (loader auto-picks TEXAS12/TEXAS3) |
-| Atari 8-bit | ✅ playable | FastBasic, see below | `texas.xex` |
-| MS-DOS | 🔨 builds, untested | `./make-exp msdos` | `r2r/msdos/texas.exe` + `texas.img` |
-| Coleco Adam | 🔨 builds, untested | `./make-exp adam` (needs z88dk) | `r2r/adam/texas.ddp` |
-| Intellivision | ✅ playable | `cd intv && make` | `intv/texas.rom` (jzIntv) + `texas.bin`/`.cfg` (SD via PiRTO II) |
-| ColecoVision | ✅ playable (MAME) | `make FUJINET_LIB=<fujinet-lib-experimental dir> PLATFORMS=coleco coleco` | `r2r/coleco/texas.rom` (32K FujiNet cart) |
-| NES | ✅ playable (MAME) | `make FUJINET_LIB=<fujinet-lib-experimental dir> PLATFORMS=nes nes` | `r2r/nes/texas.nes` (NROM FujiNet cart) |
-| Bally Astrocade | ✅ playable | `cd astrocade && ./build.sh` | `astrocade/build/texas.bin` (8K FujiNet cart image) |
-| Palm OS 3.1+ | 🔨 builds, emulator-tested | `cd palm && make` (palmdev Docker image + fujinet-lib palmos) | `palm/build/Holdem.prc` (one PRC for OS 3.1–4.x; colour on colour Palms) |
-| C64 | ⬜ not yet converted | — | — |
 
 ## What changed from 5 Card Stud
 
