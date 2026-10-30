@@ -4,7 +4,7 @@ Multi-platform 8-bit **Texas Hold 'Em** client for [FujiNet](https://fujinet.onl
 playing against the `texasholdem` server in
 [dillera/servers](https://github.com/dillera/servers)
 (`fujinet-game-system/texasholdem`). Derived from @ericcarrgh's
-[fujinet-5cardstud](https://github.com/dillera/fujinet-5cardstud) client, which
+[fujinet-5cardstud](https://github.com/FujiNetWIFI/fujinet-5cardstud) client, which
 continues separately as the 5 Card Stud game.
 
 All game logic lives on the server. Clients poll `/state`, render it, and send
@@ -85,7 +85,7 @@ fastbasic -t:atari-int-fn texas.bas -o texas.xex
 ## Intellivision client (IntyBASIC)
 
 `intv/` — standalone IntyBASIC client, converted from the
-[fujinet-5cardstud](https://github.com/dillera/fujinet-5cardstud) `intv/`
+[fujinet-5cardstud](https://github.com/FujiNetWIFI/fujinet-5cardstud) `intv/`
 client (whose source comments document the mailbox/rendering lessons in
 detail). Talks to FujiNet through the PiRTO II cartridge's memory-mapped
 mailbox at `$9C00`; parses the `bin=1` state in place out of the RX buffer.
@@ -109,7 +109,7 @@ routinely offers 4 moves).
 ## Astrocade client (Z80 assembly)
 
 `astrocade/` — standalone Z80 client, converted from the
-[fujinet-5cardstud](https://github.com/dillera/fujinet-5cardstud) `astrocade/`
+[fujinet-5cardstud](https://github.com/FujiNetWIFI/fujinet-5cardstud) `astrocade/`
 client. Talks to FujiNet through the RP2040 cartridge's memory-mapped mailbox
 and parses the `bin=1` state in place out of the reply window; nothing is
 buffered. Needs `zmac` 1.3 (found on `PATH`, or at `~/Workspace/zmac-1.3`);

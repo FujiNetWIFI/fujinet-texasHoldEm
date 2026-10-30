@@ -10,7 +10,7 @@
  *   GET <server>leave?table=T&player=P&bin=1&be=1      give up the seat
  *
  * bin=1 asks for the packed structs the 8-bit clients read (src/misc.h in
- * github.com/dillera/fujinet-texasHoldEm); be=1 makes its UInt16s big-endian,
+ * github.com/FujiNetWIFI/fujinet-texasHoldEm); be=1 makes its UInt16s big-endian,
  * as for the CoCo. Strings are fixed-size, NUL-padded and lowercased. The
  * replies are parsed field by field, since a 68000 cannot read a UInt16 at
  * the odd offsets the packed layout puts them at.
