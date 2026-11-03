@@ -24,6 +24,7 @@ client-side poker rules.
 | ColecoVision | ✅ playable (MAME) | `make FUJINET_LIB=<fujinet-lib-experimental dir> PLATFORMS=coleco coleco` | `r2r/coleco/texas.rom` (32K FujiNet cart) |
 | NES | ✅ playable (MAME) | `make FUJINET_LIB=<fujinet-lib-experimental dir> PLATFORMS=nes nes` | `r2r/nes/texas.nes` (NROM FujiNet cart) |
 | Bally Astrocade | ✅ playable | `cd astrocade && ./build.sh` | `astrocade/build/texas.bin` (8K FujiNet cart image) |
+| Emerson Arcadia 2001 | ✅ playable (MAME) | `cd arcadia && ./build.sh` | `arcadia/build/texas.bin` (8K FujiNet cart image) |
 | Palm OS 3.1+ | 🔨 builds, emulator-tested | `cd palm && make` (palmdev Docker image + fujinet-lib palmos) | `palm/build/Holdem.prc` (one PRC for OS 3.1–4.x; colour on colour Palms) |
 | C64 | ⬜ not yet converted | — | — |
 
