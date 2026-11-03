@@ -7,7 +7,7 @@ mailbox cart from `fujinet-firmware/pico/astrocade` — and renders with
 the Lynx port's screen plan, because the Lynx's 160x102 display is this
 hardware's exact resolution.
 
-Converted from [fujinet-5cardstud](https://github.com/dillera/fujinet-5cardstud)'s
+Converted from [fujinet-5cardstud](https://github.com/FujiNetWIFI/fujinet-5cardstud)'s
 Astrocade client, whose README documents the network and rendering
 lessons this one inherits. Built and tested against a live server in MAME
 through a real fujinet-pc-rs232.

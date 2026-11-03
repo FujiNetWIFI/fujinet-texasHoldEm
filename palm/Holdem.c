@@ -2,7 +2,7 @@
  *
  * A client for the FujiNet Texas Hold'em server, the same one the Apple II,
  * Atari, CoCo, MS-DOS and Intellivision clients of
- * github.com/dillera/fujinet-texasHoldEm play against. Like the Apple II
+ * github.com/FujiNetWIFI/fujinet-texasHoldEm play against. Like the Apple II
  * client, it asks for the server's packed binary state (bin=1, here with
  * be=1 for big-endian numbers) through FujiNet's N1: device as a plain HTTP
  * GET, polls it about once a second, and plays the two-letter move codes the
