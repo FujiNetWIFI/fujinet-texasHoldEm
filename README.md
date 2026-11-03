@@ -118,6 +118,30 @@ the money row, and a move menu that squeezes server labels
 (`raise 15` -> `R15`) onto a 40-column status bar — Hold'em routinely offers
 five moves. See `astrocade/README.md` for the full list.
 
+## Arcadia 2001 client (2650 assembly)
+
+`arcadia/` — standalone 2650 client, converted from the
+[fujinet-5cardstud](https://github.com/FujiNetWIFI/fujinet-5cardstud) `arcadia/`
+client. Talks to FujiNet through the cartridge's memory-mapped mailbox
+and parses the `bin=1` state in place out of the reply window. Needs the
+Macro Assembler AS (`asl`/`p2bin`); the ROM layout tools are vendored, so no
+firmware checkout is required.
+
+```bash
+cd arcadia
+./build.sh      # build/texas.bin, exactly 8192 bytes, "FUJI" claim stamped
+./run.sh        # launch in a FujiNet-patched MAME over BoIP
+                # (FUJINET_TCP=127.0.0.1:9995 against a fujinet-pc)
+make smoke      # headless end-to-end test, snapshots the table
+DEMO=1 ./build.sh   # static mock table: every drawing path, zero network
+```
+
+Controls: disc up/down moves, Enter or FIRE selects, keypad `1`-`5` choose a
+move, `0` polls now, `Clear` leaves the table. Hold'em deltas from the 5 Card
+Stud client: `community[11]` at offset 87, 2 hole cards per seat, a 5-slot
+board on row 1 under the pot and a street token (PRE/FLOP/TURN/RIVER/SHOW).
+See `arcadia/README.md` for the screen plan and code layout.
+
 ## Palm OS client (C, prc-tools)
 
 `palm/` — standalone Palm OS client, "FN Texas Hold'em" (creator `ADTH`),
