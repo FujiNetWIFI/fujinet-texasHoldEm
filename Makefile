@@ -48,10 +48,11 @@ LDFLAGS_EXTRA_ADAM += --generic-console -pragma-redirect:CRT_FONT=_font
 # TMS9918 in GRAPHICS II, with the card art in UDGs (src/coleco/udg.h) and the
 # Namco arcade font redirected in via CRT_FONT (src/coleco/font.asm). Build
 # with:
-#   make FUJINET_LIB=$HOME/Workspace/fujinet-lib-experimental PLATFORMS=coleco coleco
-# (fujinet-lib-experimental's coleco target lives on its coleco-target
-# branch; the directory form avoids fnlib.py silently reusing a stale
-# _cache clone of the wrong branch.)
+#   make FUJINET_LIB=$HOME/Workspace/fujinet-lib-coleco PLATFORMS=coleco coleco
+# (the coleco bus is fujinet-lib PR #281, branch add-coleco on
+# tschak909/fujinet-lib, built with `make coleco/r2r` -- not in a release
+# yet; the directory form avoids fnlib.py silently reusing a stale _cache
+# clone of the wrong branch.)
 #
 # BUILD_COLECO, not __COLECO__: z88dk puts -D__COLECO__ in the target-wide
 # OPTIONS line for +coleco, so -subtype=adam defines it too -- __COLECO__

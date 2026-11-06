@@ -4,7 +4,7 @@ Multi-platform 8-bit **Texas Hold 'Em** client for [FujiNet](https://fujinet.onl
 playing against the `texasholdem` server in
 [dillera/servers](https://github.com/dillera/servers)
 (`fujinet-game-system/texasholdem`). Derived from @ericcarrgh's
-[fujinet-5cardstud](https://github.com/dillera/fujinet-5cardstud) client, which
+[fujinet-5cardstud](https://github.com/FujiNetWIFI/fujinet-5cardstud) client, which
 continues separately as the 5 Card Stud game.
 
 All game logic lives on the server. Clients poll `/state`, render it, and send
@@ -102,7 +102,7 @@ fastbasic -t:atari-int-fn texas.bas -o texas.xex
 ## Intellivision client (IntyBASIC)
 
 `intv/` — standalone IntyBASIC client, converted from the
-[fujinet-5cardstud](https://github.com/dillera/fujinet-5cardstud) `intv/`
+[fujinet-5cardstud](https://github.com/FujiNetWIFI/fujinet-5cardstud) `intv/`
 client (whose source comments document the mailbox/rendering lessons in
 detail). Talks to FujiNet through the PiRTO II cartridge's memory-mapped
 mailbox at `$9C00`; parses the `bin=1` state in place out of the RX buffer.
@@ -126,7 +126,7 @@ routinely offers 4 moves).
 ## Astrocade client (Z80 assembly)
 
 `astrocade/` — standalone Z80 client, converted from the
-[fujinet-5cardstud](https://github.com/dillera/fujinet-5cardstud) `astrocade/`
+[fujinet-5cardstud](https://github.com/FujiNetWIFI/fujinet-5cardstud) `astrocade/`
 client. Talks to FujiNet through the RP2040 cartridge's memory-mapped mailbox
 and parses the `bin=1` state in place out of the reply window; nothing is
 buffered. Needs `zmac` 1.3 (found on `PATH`, or at `~/Workspace/zmac-1.3`);
@@ -149,6 +149,78 @@ the centre of the table with the street label above it and the pot moved onto
 the money row, and a move menu that squeezes server labels
 (`raise 15` -> `R15`) onto a 40-column status bar — Hold'em routinely offers
 five moves. See `astrocade/README.md` for the full list.
+
+## Arcadia 2001 client (2650 assembly)
+
+`arcadia/` — standalone 2650 client, converted from the
+[fujinet-5cardstud](https://github.com/FujiNetWIFI/fujinet-5cardstud) `arcadia/`
+client. Talks to FujiNet through the cartridge's memory-mapped mailbox
+and parses the `bin=1` state in place out of the reply window. Needs the
+Macro Assembler AS (`asl`/`p2bin`); the ROM layout tools are vendored, so no
+firmware checkout is required.
+
+```bash
+cd arcadia
+./build.sh      # build/texas.bin, exactly 8192 bytes, "FUJI" claim stamped
+./run.sh        # launch in a FujiNet-patched MAME over BoIP
+                # (FUJINET_TCP=127.0.0.1:9995 against a fujinet-pc)
+make smoke      # headless end-to-end test, snapshots the table
+DEMO=1 ./build.sh   # static mock table: every drawing path, zero network
+```
+
+Controls: disc up/down moves, Enter or FIRE selects, keypad `1`-`5` choose a
+move, `0` polls now, `Clear` leaves the table. Hold'em deltas from the 5 Card
+Stud client: `community[11]` at offset 87, 2 hole cards per seat, a 5-slot
+board on row 1 under the pot and a street token (PRE/FLOP/TURN/RIVER/SHOW).
+See `arcadia/README.md` for the screen plan and code layout.
+
+## Fairchild Channel F client (F8 assembly)
+
+`channelf/` — standalone F8 client, converted from the
+[fujinet-5cardstud](https://github.com/FujiNetWIFI/fujinet-5cardstud) `channelf/`
+client. The FujiNet cartridge gives the console 30K of RAM, and the screens
+render straight out of the mailbox reply window. Needs the Macro Assembler AS
+(`asl`/`p2bin`, in `~/asl` by default).
+
+```bash
+cd channelf
+./build.sh      # build/texas.bin, exactly 16384 bytes, "FUJI" claim at $47FC
+```
+
+Hold'em deltas from the 5 Card Stud client: `community[11]` at offset 87, two
+hole cards per seat, the five-slot board in the title row beside the pot, and
+each seat's last move (CALL, RAISE, FOLD...) in the card slots a stud hand
+used. See `channelf/README.md` and `channelf/screenshots/`.
+
+## Palm OS client (C, prc-tools)
+
+`palm/` — standalone Palm OS client, "FN Texas Hold'em" (creator `ADTH`),
+brought over from [fujinet-palm](https://github.com/dillera/fujinet-palm).
+Talks to FujiNet over the FujiBus serial link and parses the `bin=1` state.
+`palm/common/` is a copy of fujinet-palm's shared FujiBus/network library.
+
+One PRC runs on Palm OS 3.1, 3.3, 3.5 and later. On OS 3.5+ with a colour
+screen it switches to 8-bit colour (green felt, red hearts and diamonds,
+blue backs, gold chips); black and white and greyscale Palms get the 1-bit
+cards. The "Legacy cradle" link needs OS 3.3's Serial Manager, so older
+Palms default to "Serial Library".
+
+The non-legacy links come from fujinet-lib's Palm OS platform, the `palmos`
+branch of [nwah/fujinet-lib-experimental](https://github.com/nwah/fujinet-lib-experimental/tree/palmos),
+expected beside this repo (override with `FNLIB=/path`). The m68k toolchain
+runs in Docker:
+
+```bash
+git clone -b palmos https://github.com/nwah/fujinet-lib-experimental.git \
+    ../fujinet-palm-dev/fujinet-lib-palmos   # once
+cd palm
+make image      # once: builds the palmdev toolchain image
+make            # build/Holdem.prc
+make demo       # build/demo/Holdem.prc, "FN Hold'em Demo": no network, plays
+                #   the saved replies (table "turn" or "show" for those states)
+make test       # desktop test of the wire reader and card art
+make cards      # regenerate cardart.h from this repo's Apple II + Lynx art
+```
 
 ## Testing against a local server
 
