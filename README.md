@@ -142,6 +142,24 @@ Stud client: `community[11]` at offset 87, 2 hole cards per seat, a 5-slot
 board on row 1 under the pot and a street token (PRE/FLOP/TURN/RIVER/SHOW).
 See `arcadia/README.md` for the screen plan and code layout.
 
+## Fairchild Channel F client (F8 assembly)
+
+`channelf/` — standalone F8 client, converted from the
+[fujinet-5cardstud](https://github.com/FujiNetWIFI/fujinet-5cardstud) `channelf/`
+client. The FujiNet cartridge gives the console 30K of RAM, and the screens
+render straight out of the mailbox reply window. Needs the Macro Assembler AS
+(`asl`/`p2bin`, in `~/asl` by default).
+
+```bash
+cd channelf
+./build.sh      # build/texas.bin, exactly 16384 bytes, "FUJI" claim at $47FC
+```
+
+Hold'em deltas from the 5 Card Stud client: `community[11]` at offset 87, two
+hole cards per seat, the five-slot board in the title row beside the pot, and
+each seat's last move (CALL, RAISE, FOLD...) in the card slots a stud hand
+used. See `channelf/README.md` and `channelf/screenshots/`.
+
 ## Palm OS client (C, prc-tools)
 
 `palm/` — standalone Palm OS client, "FN Texas Hold'em" (creator `ADTH`),
