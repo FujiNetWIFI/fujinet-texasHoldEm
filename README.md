@@ -11,6 +11,21 @@ All game logic lives on the server. Clients poll `/state`, render it, and send
 back server-supplied 2-character move codes — so the betting UI never needs
 client-side poker rules.
 
+## Platform status
+
+| Platform | Status | Build | Output |
+|----------|--------|-------|--------|
+| Apple II | ✅ playable | `make apple2` | `r2r/apple2/texas.po` (boots straight into the game) |
+| CoCo 1/2/3 | ✅ playable | `make coco-dist` | `r2r/coco/texas.dsk` (loader auto-picks TEXAS12/TEXAS3) |
+| Atari 8-bit | ✅ playable | FastBasic, see below | `texas.xex` |
+| MS-DOS | 🔨 builds, untested | `./make-exp msdos` | `r2r/msdos/texas.exe` + `texas.img` |
+| Coleco Adam | 🔨 builds, untested | `./make-exp adam` (needs z88dk) | `r2r/adam/texas.ddp` |
+| Intellivision | ✅ playable | `cd intv && make` | `intv/texas.rom` (jzIntv) + `texas.bin`/`.cfg` (SD via PiRTO II) |
+| ColecoVision | ✅ playable (MAME) | `make FUJINET_LIB=<fujinet-lib-experimental dir> PLATFORMS=coleco coleco` | `r2r/coleco/texas.rom` (32K FujiNet cart) |
+| NES | ✅ playable (MAME) | `make FUJINET_LIB=<fujinet-lib-experimental dir> PLATFORMS=nes nes` | `r2r/nes/texas.nes` (NROM FujiNet cart) |
+| Bally Astrocade | ✅ playable | `cd astrocade && ./build.sh` | `astrocade/build/texas.bin` (8K FujiNet cart image) |
+| Heathkit H89 | ✅ playable (FujiNet Go H89) | `make FUJINET_LIB=<fujinet-lib h89-support dir> PLATFORMS=h89-cpm h89-cpm` (or `h89-hdos`) | `r2r/h89-cpm/texas.com` / `r2r/h89-hdos/texas.abs`, each with a 100K H17 disk `texas.h8d` |
+| C64 | ⬜ not yet converted | — | — |
 
 ## What changed from 5 Card Stud
 
@@ -54,6 +69,23 @@ glyph+colour pair from the ColecoVision font and card art (`src/coleco/font.bin`
 `udg.h`) into NES tiles; rerun it after changing either. Headless MAME checks
 against a live fujinet-pc: `make coleco-smoke` / `make nes-smoke` (see the
 Makefile for `EXPECT=`/`SCRIPT=`), and `make nes-play` for a window.
+
+The Heathkit H89 port (`src/h89`) runs under both HDOS 2.0 and CP/M 2.2 and talks to the
+H89 FujiNet card (an 8255 at 0xD0) through the `h89-support` branch of
+[fujinet-lib](https://github.com/tschak909/fujinet-lib). It draws everything on the
+H19 terminal with the H19's own graphics characters and reverse video. The ROM has
+no card suits, so each suit is a 2x2 picture made of triangles and quadrant blocks:
+♠ ◢◣/▝▘, ♥ ▙▟/◥◤, ♦ ◢◣/◥◤, ♣ ▗▖/●●. Cards are 6x5 with checkerboard backs, and the
+table is an oval rail drawn with diagonals and edge lines. The status bar is the
+H19's 25th line, the logo is built from quadrant-block letters
+(`python3 -I src/h89/mklogo.py > src/h89/logo.h`), and the colour toggle shows
+hearts and diamonds in reverse video. The console runs at 9600 baud, so
+`src/h89/console.c` draws into a back buffer and sends only the cells that changed.
+An opponent's move costs about 40-70 bytes. Controls: the keypad arrows move,
+RETURN/SPACE selects, ESC or f1-f5 opens the menu, and quitting returns to the OS.
+Disks: CP/M `B:TEXAS`; HDOS `MOUNT SY1:` then `RUN SY1:TEXAS.ABS`. `make h89-smoke
+[H89_OS=hdos]` boots it headless in
+[FujiNet Go H89](https://github.com/tschak909/fujinet-go-h89-desktop)'s session runner.
 
 ## Atari client (FastBasic)
 

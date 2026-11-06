@@ -53,6 +53,21 @@ extern unsigned char redrawGameScreen;
 #define COMMUNITY_Y 9
 #endif
 
+// Card pitch: on the tile platforms a card is 3 cells wide and the next one
+// overlaps its right border. The H89's cards are 6 wide with a gap between.
+#ifndef HOLE_CARD_STEP
+#define HOLE_CARD_STEP 2
+#endif
+#ifndef COMMUNITY_CARD_STEP
+#define COMMUNITY_CARD_STEP 2
+#endif
+
+// Where a right-side seat's name and purse end, counted from its card's
+// left column: the second column of a 3-wide card, or the H89's right edge.
+#ifndef NAME_RIGHT_X
+#define NAME_RIGHT_X 1
+#endif
+
 void progressAnim(unsigned char y) {
   for(i=0;i<3;++i) {
     pause(10);
@@ -99,7 +114,7 @@ static const char streetNames[12][10] = {
 void drawStreetLabel() {
   if (state.round > 5 || state.playerCount < 2)
     return;
-#if defined(BUILD_COLECO) || defined(BUILD_NES)
+#if defined(BUILD_COLECO) || defined(BUILD_NES) || defined(BUILD_SMS)
   // The shared spot sits on the left seat's cards on a 32-column table, and
   // the pot now lives below the board. Row 8 is the clear gap between the top
   // seats (cards end row 7) and the board (row 9).
@@ -153,7 +168,7 @@ void drawNamePurse() {
     y = playerY[i]-1;
     x = playerX[i];
     if (playerDir[i]<0)
-      x++;
+      x+=NAME_RIGHT_X;
 
     if (i>0 || state.viewing) {
       xx=x;
@@ -280,7 +295,7 @@ void drawCards(bool finalFlip) {
       hand = state.players[i].hand;
       if (strlen(hand)>j*2+1) {
         /* A one-card hand is a fold: the renderer wipes the empty slot. */
-        drawCard(playerX[i]+(j*2)*playerDir[i], playerY[i],
+        drawCard(playerX[i]+(j*HOLE_CARD_STEP)*playerDir[i], playerY[i],
                  (unsigned char)(strlen(hand) > 3 ? FULL_CARD
                                                   : (FULL_CARD | CARD_CLEAR_NEXT)),
                  hand+j*2, false);
@@ -303,7 +318,7 @@ void drawCards(bool finalFlip) {
       pause(10);
     }
 
-    drawCard(COMMUNITY_X+j*2, COMMUNITY_Y, FULL_CARD, state.community+j*2, false);
+    drawCard(COMMUNITY_X+j*COMMUNITY_CARD_STEP, COMMUNITY_Y, FULL_CARD, state.community+j*2, false);
 
     if (doAnim)
       soundDealCard();
@@ -321,7 +336,7 @@ void drawCards(bool finalFlip) {
         continue;
 
       for (j=0;j<2;j++) {
-        drawCard(playerX[h]+(j*2)*playerDir[h], playerY[h], FULL_CARD, state.players[h].hand+j*2, false);
+        drawCard(playerX[h]+(j*HOLE_CARD_STEP)*playerDir[h], playerY[h], FULL_CARD, state.players[h].hand+j*2, false);
       }
 
       soundDealCard();
