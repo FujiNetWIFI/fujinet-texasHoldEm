@@ -46,7 +46,6 @@
 
 void __fastcall__ ppu_put(unsigned int addr, unsigned char val);   /* ppu.s */
 
-bool always_render_full_cards = 0;
 
 /* What each cell shows, as a glyph code (ASCII or UDG_*). */
 static unsigned char shadow[HEIGHT][WIDTH];

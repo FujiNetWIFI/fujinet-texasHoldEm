@@ -19,7 +19,7 @@ static uint8_t channelOpen = 0;
   window (COLECO_REPLY_WINDOW, and see src/misc.h's clientState) and the game
   renders straight out of it, because the console has 1K of RAM and the state
   alone is 429 bytes. Two things follow, and both are the reason this is not
-  simply src/adam/network.c:
+  simply src/network.c:
 
   1. The read has to be ONE transaction. network_read()'s loop would copy its
      second chunk to `buffer + count`, which is cartridge ROM -- the store goes

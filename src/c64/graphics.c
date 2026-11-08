@@ -51,8 +51,6 @@
 static unsigned short screen = SCREEN_LOC;
 static unsigned char col_text = COL_BLACK;
 
-bool always_render_full_cards = 0;
-
 unsigned char colorMode=0;
 //static unsigned char doubleBuf=0;
 

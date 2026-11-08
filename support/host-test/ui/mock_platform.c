@@ -11,7 +11,6 @@
 #include "../../../src/platform-specific/appkey.h"
 
 char screen[HEIGHT][WIDTH + 1];
-bool always_render_full_cards = true;
 unsigned char colorMode = 1;
 
 static void put(unsigned char x, unsigned char y, char c) {

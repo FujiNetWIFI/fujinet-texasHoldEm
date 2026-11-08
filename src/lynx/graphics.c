@@ -10,7 +10,6 @@
 #include "../platform-specific/graphics.h"
 #include "drawfont.h"
 #include "cardsprites.h"
-#include "lynxfnio.h"
 
 
 #define LYNX_STATUS_Y    96              // status bar line, in lynx screen coords
@@ -29,7 +28,6 @@ unsigned char lynx_bg_color;
 unsigned char lynx_card_fringe_color;
 
 unsigned char colorMode;
-unsigned char always_render_full_cards = 0;
 
 
 // card suits - may not need
@@ -215,9 +213,6 @@ void initGraphics()
 
     // setup joystick - seems the best place to do this
     joy_install(joy_static_stddrv);
-
-    // Init Fujinet - since we don't have Lynx in network-lib yet
-    fnio_init();
 
     // setup for double buffering
     drawpage = 0;

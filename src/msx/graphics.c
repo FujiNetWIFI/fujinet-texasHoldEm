@@ -18,8 +18,6 @@
 #define CORNER_TOP 0
 #define CORNER_BOTTOM 18
 
-bool always_render_full_cards = 0;
-
 /**
  * @brief Initialize graphics mode; set palette.
  */

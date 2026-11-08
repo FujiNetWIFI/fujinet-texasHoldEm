@@ -1,5 +1,5 @@
 #ifdef _CMOC_VERSION_
-#include "coco/coco_bool.h"
+#include <fujinet-int.h>
 #include <cmoc.h>
 #include <coco.h>
 unsigned char kbhit(void);

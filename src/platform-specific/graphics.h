@@ -13,14 +13,12 @@
 #define CARD_CLEAR_NEXT 4
 
 #ifdef _CMOC_VERSION_
-#include "../coco/coco_bool.h"
+#include <fujinet-int.h>
 #else
 #include <stdint.h>
 #include <stdbool.h>
 #endif /* _CMOC_VERSION_  */
 #include "../misc.h"
-
-extern bool always_render_full_cards;
 
 void enableDoubleBuffer();
 void disableDoubleBuffer();

@@ -756,9 +756,6 @@ void requestPlayerMove() {
 
  
 
-// Animate the line. If needed, can add #if around instead
-// of checking render full cards
-//if (always_render_full_cards) {
   drawLine(0,HEIGHT-1, h+h+i);
   pause(5);
   for (j=h;j>0;--j) {
@@ -766,7 +763,6 @@ void requestPlayerMove() {
     hideLine(h+i+j-1,HEIGHT-1,1);
     pause(2);
   }
-//}
 
   drawLine(h,HEIGHT-1,i);
   soundMyTurn();

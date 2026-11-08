@@ -33,8 +33,6 @@
 // VDP interrupt hook living in util.c (bumps the timer + vsync flag)
 extern void myInt(void);
 
-bool always_render_full_cards = 0;
-
 /**
  * @brief Initialize graphics mode; set palette.
  */
