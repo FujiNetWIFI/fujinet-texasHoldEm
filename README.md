@@ -22,6 +22,7 @@ client-side poker rules.
 | Intellivision | ✅ playable | `cd intv && make` | `intv/texas.rom` (jzIntv) + `texas.bin`/`.cfg` (SD via PiRTO II) |
 | Bally Astrocade | ✅ playable | `cd astrocade && ./build.sh` | `astrocade/build/texas.bin` (8K FujiNet cart image) |
 | Heathkit H89 | ✅ playable (FujiNet Go H89) | `make h89-cpm` (or `h89-hdos`) | `r2r/h89-cpm/texas.com` / `r2r/h89-hdos/texas.abs`, each with a 100K H17 disk `texas.h8d` |
+| TRS-80 Model II | ✅ playable (trs80gp) | `make model2` | `r2r/model2/texas.imd` (Pickles & Trout CP/M; `B:TEXAS`) |
 
 ## What changed from 5 Card Stud
 
@@ -37,11 +38,11 @@ client-side poker rules.
   transitions (single-buffer platforms).
 * Rebranded logos/help; per-platform layout tuned so nothing overlaps the board.
 
-## C client (Apple II, CoCo, MS-DOS, Coleco Adam, C64, MSX, H89, ColecoVision, NES)
+## C client (Apple II, CoCo, MS-DOS, Coleco Adam, C64, MSX, H89, Model II, ColecoVision, NES)
 
 Shared core in `src/` + per-platform layer in `src/<platform>/`. Toolchains:
 cc65 (Apple II/C64/NES), cmoc (CoCo), OpenWatcom v2 (MS-DOS), z88dk
-(Adam/MSX/H89/ColecoVision).
+(Adam/MSX/H89/Model II/ColecoVision).
 
 ```bash
 make apple2         # needs cc65, Java + AppleCommander ac/acx CLIs

@@ -97,7 +97,8 @@ void drawPot() {
 #if WIDTH >= 40
 #define STREET_X (WIDTH/2-13)
 static const char* streetNames[6] = {
-  "         ", "PRE-FLOP ", "FLOP     ", "TURN     ", "RIVER    ", "SHOWDOWN "
+  "         ", TXT("PRE-FLOP ", "Pre-flop "), TXT("FLOP     ", "Flop     "),
+  TXT("TURN     ", "Turn     "), TXT("RIVER    ", "River    "), TXT("SHOWDOWN ", "Showdown ")
 };
 #else
 #define STREET_X 0
@@ -180,15 +181,20 @@ void drawNamePurse() {
       drawText(xx, y, state.players[i].name);
 
       if (state.activePlayer!=i) {
+#ifndef drawActiveName
         hideLine(xx, y+1, (unsigned char)strlen(state.players[i].name));
+#endif
       } else {
         cursorX=xx;
         cursorY=y;
+#ifdef drawActiveName
+        drawActiveName(xx, y, (unsigned char)strlen(state.players[i].name));
+#endif
       }
     } else {
       // Draw YOU player name
       #if WIDTH>=40
-        drawText(x-5, playerY[i]+2, (const char *)" YOU");
+        drawText(x-5, playerY[i]+2, (const char *)TXT(" YOU", " You"));
       #else
         // Squeezed for horizontal space, so shift above cards
         // drawText(x+3, playerY[i]-1, (const char *)" YOU");
@@ -366,7 +372,7 @@ void checkIfSpectatorStatusChanged() {
   wasViewing = viewing;
 
   if (viewing) {
-    drawStatusText("TABLE FULL: WATCHING AS A SPECTATOR");
+    drawStatusText(TXT("TABLE FULL: WATCHING AS A SPECTATOR", "Table full: watching as a spectator"));
     drawBuffer();
     pause(80);
   } else if (
@@ -378,7 +384,7 @@ void checkIfSpectatorStatusChanged() {
      * Otherwise, they are re-joining due to connection error, so we do not delay
      */
 
-    centerStatusText("YOU SIT DOWN AT THE TABLE");
+    centerStatusText(TXT("YOU SIT DOWN AT THE TABLE", "You sit down at the table"));
     drawBuffer();
 
     soundJoinGame();
@@ -398,7 +404,7 @@ void checkIfPlayerCountChanged() {
   if (state.playerCount>1 && prevPlayerCount > 0) {
     if (state.playerCount < prevPlayerCount) {
 
-      drawStatusText("A PLAYER LEFT THE TABLE");
+      drawStatusText(TXT("A PLAYER LEFT THE TABLE", "A player left the table"));
       drawBuffer();
 
       soundPlayerLeft();
@@ -407,7 +413,7 @@ void checkIfPlayerCountChanged() {
       //   sound 1,255-j*j,10,j:pause 2:sound:pause 8
       // next
     } else {
-      strcpy(state.lastResult, "A NEW PLAYER JOINS THE TABLE");
+      strcpy(state.lastResult, TXT("A NEW PLAYER JOINS THE TABLE", "A new player joins the table"));
       drawStatusText(state.lastResult);
       drawBuffer();
 
@@ -455,6 +461,7 @@ void drawStatusTimeLeft() {
 }
 
 void highlightActivePlayer() {
+#ifndef drawActiveName
  if (state.activePlayer>0 && state.playerCount>1) {
    i=(unsigned char)strlen(state.players[state.activePlayer].name);
     for (j=2;j<=i;j++) {
@@ -462,6 +469,7 @@ void highlightActivePlayer() {
       drawBuffer();
     }
   }
+#endif
 }
 
 void animateChipsToPotOnRoundEnd() {
@@ -532,7 +540,7 @@ void drawGameStatus() {
     return;
 
   if (state.activePlayer>0) {
-    strcpy(tempBuffer,"WAITING ON ");
+    strcpy(tempBuffer,TXT("WAITING ON ", "Waiting on "));
     strcat(tempBuffer, state.players[state.activePlayer].name);
     drawStatusText(tempBuffer);
 
