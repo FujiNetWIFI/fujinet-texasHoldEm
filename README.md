@@ -1,9 +1,7 @@
 # fujinet-texasHoldEm
 
 Multi-platform 8-bit **Texas Hold 'Em** client for [FujiNet](https://fujinet.online),
-playing against the `texasholdem` server in
-[dillera/servers](https://github.com/dillera/servers)
-(`fujinet-game-system/texasholdem`). Derived from @ericcarrgh's
+playing against the `texasholdem` server Eric's GCP Go Cluster. Derived from @ericcarrgh's
 [fujinet-5cardstud](https://github.com/FujiNetWIFI/fujinet-5cardstud) client, which
 continues separately as the 5 Card Stud game.
 
