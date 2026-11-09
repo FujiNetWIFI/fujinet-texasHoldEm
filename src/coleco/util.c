@@ -13,7 +13,6 @@
 #include <stdlib.h>
 #include <interrupt.h>
 #include <fujinet-fuji.h>
-#include <fujinet-coleco.h>
 #include "vars.h"
 #include "../platform-specific/graphics.h"
 
@@ -101,7 +100,8 @@ static uint8_t findLobbyHost(void)
   all-or-nothing over the whole 8x32 table, and the seven slots that would have
   to be preserved only exist in the reply window, which cannot be patched -- so
   creating one means staging 256 bytes somewhere. There is nowhere: BSS would
-  cost a quarter of the machine permanently, and the C stack here is 289 bytes.
+  cost a quarter of the machine permanently, and the C stack here is only a
+  couple of hundred bytes (bsscheck.py reports it).
   A player who reached this client through the FujiNet Lobby already has the
   host; anyone else is told to add it in CONFIG, which is a better outcome than
   a stack overflow at the one moment the game is handing the console away.
@@ -121,13 +121,14 @@ static bool mountLobby(uint8_t slot)
 
 void quit(void)
 {
+  FujiUserRomProgress progress;
   // Not `state`: src/misc.h defines that as a macro for the game state.
-  uint8_t bootState, slot, pct = 0xFF;
+  uint8_t romState, slot, pct = 0xFF;
   char pctText[5];
 
   drawStatusText("LOADING LOBBY...");
 
-  if (!fuji_coleco_present())
+  if (fuji_user_rom_status(&progress) == FUJI_USER_ROM_NO_CART)
   {
     drawStatusText("NO FUJINET CARTRIDGE");
     return;
@@ -147,31 +148,27 @@ void quit(void)
   }
 
   // Watch the cartridge's own progress counter rather than guessing a delay.
-  for (;;)
+  while ((romState = fuji_user_rom_status(&progress)) == FUJI_USER_ROM_LOADING)
   {
-    bootState = fuji_coleco_boot_state();
-
-    if (bootState == FUJI_COLECO_BOOT_READY)
-      break;
-    if (bootState == FUJI_COLECO_BOOT_FAILED)
+    if (progress.percent != pct)
     {
-      drawStatusText("LOBBY LOAD FAILED");
-      return;
-    }
-
-    if (fuji_coleco_boot_percent() != pct)
-    {
-      pct = fuji_coleco_boot_percent();
+      pct = progress.percent;
       itoa(pct, pctText, 10);
       strcat(pctText, "%");
       drawStatusTextAt(18, pctText);
     }
   }
 
-  // Stop the firmware serving CONFIG at boot, then hand the console over. The
-  // swap does not return: every byte of $8000-$FFFF changes underneath it.
+  if (romState != FUJI_USER_ROM_READY)
+  {
+    drawStatusText("LOBBY LOAD FAILED");
+    return;
+  }
+
+  // Stop the firmware serving CONFIG at boot, then hand the console over. It
+  // does not return: every byte of $8000-$FFFF changes underneath it.
   fuji_set_boot_config(0);
-  fuji_coleco_boot_swap();
+  fuji_enable_user_rom();
 }
 
 #endif /* BUILD_COLECO */

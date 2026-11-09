@@ -1,9 +1,7 @@
 PRODUCT = texas
-PLATFORMS = adam apple2 c64 coco h89-cpm h89-hdos msdos msxrom
+PLATFORMS = adam apple2 c64 coco coleco h89-cpm h89-hdos msdos msxrom nes
 # No fujinet-lib support for these yet.
 #PLATFORMS += plus4 sms
-# Need fujinet-nes.h and fujinet-coleco.h, which fujinet-lib keeps in its bus folders.
-#PLATFORMS += coleco nes
 # Needs getPlatformKey() and platformNameEntry() in src/lynx.
 #PLATFORMS += lynx
 
