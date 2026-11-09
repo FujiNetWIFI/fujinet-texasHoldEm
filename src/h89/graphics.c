@@ -45,7 +45,6 @@
 #define RAIL_LEFT 16
 #define RAIL_RIGHT 63
 
-bool always_render_full_cards = 0;
 unsigned char colorMode = 0;
 
 static bool buffered;

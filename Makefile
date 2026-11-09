@@ -1,9 +1,11 @@
 PRODUCT = texas
-#plus4 also works, but needs fujinet-lib
-PLATFORMS = apple2 c64 coco
-#MSX ROM, MSDOS, and Adam use fujinet-lib-experimental
-#Use make-exp <platform> to build them.
-#PLATFORMS = msxrom msdos adam
+PLATFORMS = adam apple2 c64 coco h89-cpm h89-hdos msdos msxrom
+# No fujinet-lib support for these yet.
+#PLATFORMS += plus4 sms
+# Need fujinet-nes.h and fujinet-coleco.h, which fujinet-lib keeps in its bus folders.
+#PLATFORMS += coleco nes
+# Needs getPlatformKey() and platformNameEntry() in src/lynx.
+#PLATFORMS += lynx
 
 # You can run 'make <platform>' to build for a specific platform,
 # or 'make <platform>/<target>' for a platform-specific target.
@@ -22,7 +24,7 @@ SRC_DIRS = src src/%PLATFORM%
 # - a URL to a git repo
 # - empty which will use whatever is the latest
 # - undefined, no fujinet-lib will be used
-FUJINET_LIB =
+FUJINET_LIB = https://github.com/FujiNetWIFI/fujinet-lib.git
 
 # Define extra dirs ("combos") that expand with a platform.
 # Format: platform+=combo1,combo2
@@ -36,7 +38,7 @@ PLATFORM_COMBOS = \
 CFLAGS_EXTRA_MSDOS = -q -otexan
 
 CFLAGS_EXTRA_MSXROM = -DBUILD_MSX
-LDFLAGS_EXTRA_MSXROM += --generic-console -pragma-redirect:CRT_FONT=_font -create-app -lm
+LDFLAGS_EXTRA_MSXROM += --generic-console -pragma-redirect:CRT_FONT=_font -create-app
 
 # z88dk's +coleco -subtype=adam doesn't define an Adam-specific macro, so
 # supply the one all of src/adam is guarded by.
@@ -46,13 +48,7 @@ LDFLAGS_EXTRA_ADAM += --generic-console -pragma-redirect:CRT_FONT=_font
 # ColecoVision cartridge: z88dk +coleco (sccz80), the same graphics stack the
 # fujinet-5cardstud ColecoVision port uses -- z88dk's generic console over the
 # TMS9918 in GRAPHICS II, with the card art in UDGs (src/coleco/udg.h) and the
-# Namco arcade font redirected in via CRT_FONT (src/coleco/font.asm). Build
-# with:
-#   make FUJINET_LIB=$HOME/Workspace/fujinet-lib-coleco PLATFORMS=coleco coleco
-# (the coleco bus is fujinet-lib PR #281, branch add-coleco on
-# tschak909/fujinet-lib, built with `make coleco/r2r` -- not in a release
-# yet; the directory form avoids fnlib.py silently reusing a stale _cache
-# clone of the wrong branch.)
+# Namco arcade font redirected in via CRT_FONT (src/coleco/font.asm).
 #
 # BUILD_COLECO, not __COLECO__: z88dk puts -D__COLECO__ in the target-wide
 # OPTIONS line for +coleco, so -subtype=adam defines it too -- __COLECO__
@@ -70,35 +66,25 @@ LDFLAGS_EXTRA_COLECO += --generic-console -pragma-redirect:CRT_FONT=_font -m \
   -pragma-define:REGISTER_SP=0x73B8 \
   -pragma-define:CLIB_FOPEN_MAX=0
 
-# NES cartridge, with fujinet-lib-experimental's nes target (its add-nes
-# branch). src/nes is guarded by BUILD_NES the way src/coleco is. The linker
-# config is the lib's FujiNet layout with the CHR-ROM split so the game's own
-# pattern table sits at $1000 beside the cc65 font the runtime insists on (see
-# src/nes/nes.cfg). Build with:
-#   make FUJINET_LIB=$HOME/Workspace/fujinet-lib-experimental PLATFORMS=nes nes
+# NES cartridge. src/nes is guarded by BUILD_NES the way src/coleco is. The
+# linker config is the lib's FujiNet layout with the CHR-ROM split so the game's
+# own pattern table sits at $1000 beside the cc65 font the runtime insists on
+# (see src/nes/nes.cfg).
 CFLAGS_EXTRA_NES = -DBUILD_NES
 NES_CFG = src/nes/nes.cfg
 
-# Sega Master System cartridge, with fujinet-lib-experimental's sms target (its
-# add-sms branch). src/sms is guarded by BUILD_SMS the way src/coleco is. -m
-# leaves a map next to the image; the client has to end below $7FD8 to stay a
-# 32K image. Build with:
-#   make FUJINET_LIB=$HOME/Workspace/fnlib-sms PLATFORMS=sms sms
+# Sega Master System cartridge. src/sms is guarded by BUILD_SMS the way
+# src/coleco is. -m leaves a map next to the image; the client has to end below
+# $7FD8 to stay a 32K image.
 CFLAGS_EXTRA_SMS = -DBUILD_SMS
 LDFLAGS_EXTRA_SMS += -m -pragma-define:CRT_ENABLE_STDIO=0 \
   -pragma-define:CLIB_FOPEN_MAX=0
 
-# Heathkit H89 (z88dk +hdos / +cpm, the H89 FujiNet card on the 8255 at 0xD0),
-# with fujinet-lib's h89-support branch (checked out at ~/Workspace/fujinet-lib,
-# r2r/h89-{cpm,hdos}/ prebuilt). One tree, two programs: both builds share
-# src/h89 through the combos below, guarded by __H89__ (which both platform .mk
-# files define; the lib keys on it too). The game draws on the H19 terminal
-# with its graphics characters and escape codes; each r2r-post packs the
-# program onto a 100K H17 disk. Build with:
-#   make FUJINET_LIB=$HOME/Workspace/fujinet-lib PLATFORMS=h89-hdos h89-hdos
-#       r2r/h89-hdos/texas.abs + texas.h8d: MOUNT SY1: then RUN SY1:TEXAS.ABS
-#   make FUJINET_LIB=$HOME/Workspace/fujinet-lib PLATFORMS=h89-cpm h89-cpm
-#       r2r/h89-cpm/texas.com + texas.h8d: B:TEXAS
+# Heathkit H89 (z88dk +hdos / +cpm, the H89 FujiNet card on the 8255 at 0xD0).
+# One tree, two programs: both builds share src/h89 through the combos below,
+# guarded by __H89__ (which both platform .mk files define; the lib keys on it
+# too). The game draws on the H19 terminal with its graphics characters and
+# escape codes; each r2r-post packs the program onto a 100K H17 disk.
 PLATFORM_COMBOS += h89-cpm+=h89 h89-hdos+=h89
 CFLAGS_EXTRA_H89-CPM = -O3
 CFLAGS_EXTRA_H89-HDOS = -O3
@@ -149,7 +135,7 @@ build/charset_active.fnt: $(COCO_CHARSET_SRC) | build
 build:
 	mkdir -p $@
 
-build/coco/src/coco/charset.o: build/charset_active.fnt
+EXTRA_S_DEPS_COCO = build/charset_active.fnt
 
 include mekkogx/toplevel-rules.mk
 

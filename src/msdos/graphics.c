@@ -12,8 +12,6 @@
 #define VIDEO_ODD_OFFSET 0x2000
 #define GREEN_MASK 0x55
 
-bool always_render_full_cards = 0;
-
 uint8_t colorMode=0;
 uint8_t mask=0;
 uint8_t textMask=GREEN_MASK;

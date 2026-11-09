@@ -761,8 +761,8 @@ PROC WelcomeScreen
 ENDPROC
 
 PROC QuitGame
-  ' Enable FujiNet Config to take over D1:
-  SIO $70, 1, $D9, $00, 0, $09, 0, 1,0
+  ' Boot the lobby: SET_BOOT_MODE 2
+  SIO $70, 1, $D6, $00, 0, $09, 0, 2,0
 
   ' Reboot via assembly: JMP $E477     
   i=usr(&""$4C$77$E4+1)

@@ -145,10 +145,6 @@ void readCommonInput() {
   }
 }
 
-void applyPrefs() {
-
-}
-
 void loadPrefs() {
 
   read_appkey(AK_CREATOR_ID, AK_APP_ID, AK_KEY_PREFS, tempBuffer);

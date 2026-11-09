@@ -42,8 +42,6 @@ extern void vdp_word(unsigned int w) __z88dk_fastcall;
 extern void vdp_byte(unsigned char b) __z88dk_fastcall;
 extern void vdp_tiles(const unsigned char *runs) __z88dk_fastcall;
 
-bool always_render_full_cards = 0;
-
 /* What each cell shows, as a glyph code (ASCII or UDG_*), and the name table
    entry drawing it. */
 static unsigned char glyphs[HEIGHT][WIDTH];

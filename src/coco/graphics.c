@@ -3,7 +3,7 @@
 /*
   Graphics functionality
 */
-#include "coco_bool.h"
+#include <fujinet-int.h>
 
 #include "hires.h"
 #include "vars.h"
@@ -58,7 +58,6 @@ uint8_t paletteBackup[16];
 uint8_t paletteBackup[8];
 #endif
 
-bool always_render_full_cards = 0;
 uint8_t xor_mask=0;
 uint8_t font_shift=0;
 #ifdef COCO3

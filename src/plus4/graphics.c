@@ -29,7 +29,6 @@
 #define KERNAL_CHAR_PTR 0xC8
 #define KERNAL_CRAM_PTR 0xEA
 
-bool always_render_full_cards=false;
 unsigned char colorMode = 0;
 static unsigned short screen = DBLBUF_LOC;
 static unsigned char col_text = COL_BLACK;

@@ -18,14 +18,15 @@ client-side poker rules.
 | Apple II | ✅ playable | `make apple2` | `r2r/apple2/texas.po` (boots straight into the game) |
 | CoCo 1/2/3 | ✅ playable | `make coco-dist` | `r2r/coco/texas.dsk` (loader auto-picks TEXAS12/TEXAS3) |
 | Atari 8-bit | ✅ playable | FastBasic, see below | `texas.xex` |
-| MS-DOS | 🔨 builds, untested | `./make-exp msdos` | `r2r/msdos/texas.exe` + `texas.img` |
-| Coleco Adam | 🔨 builds, untested | `./make-exp adam` (needs z88dk) | `r2r/adam/texas.ddp` |
+| MS-DOS | ✅ playable | `make msdos` | `r2r/msdos/texas.exe` + `texas.img` |
+| Coleco Adam | ✅ playable | `make adam` (needs z88dk) | `r2r/adam/texas.ddp` |
+| C64 | ✅ playable | `make c64` | `r2r/c64/texas.prg` |
+| MSX | 🔨 builds; can't reach FujiNet on FujiNet Go MSX | `make msxrom` | `r2r/msxrom/texas.rom` |
 | Intellivision | ✅ playable | `cd intv && make` | `intv/texas.rom` (jzIntv) + `texas.bin`/`.cfg` (SD via PiRTO II) |
-| ColecoVision | ✅ playable (MAME) | `make FUJINET_LIB=<fujinet-lib-experimental dir> PLATFORMS=coleco coleco` | `r2r/coleco/texas.rom` (32K FujiNet cart) |
-| NES | ✅ playable (MAME) | `make FUJINET_LIB=<fujinet-lib-experimental dir> PLATFORMS=nes nes` | `r2r/nes/texas.nes` (NROM FujiNet cart) |
+| ColecoVision | ⏸ not built: needs fujinet-lib's ROM boot API | — | — |
+| NES | ⏸ not built: needs fujinet-lib's ROM boot API | — | — |
 | Bally Astrocade | ✅ playable | `cd astrocade && ./build.sh` | `astrocade/build/texas.bin` (8K FujiNet cart image) |
-| Heathkit H89 | ✅ playable (FujiNet Go H89) | `make FUJINET_LIB=<fujinet-lib h89-support dir> PLATFORMS=h89-cpm h89-cpm` (or `h89-hdos`) | `r2r/h89-cpm/texas.com` / `r2r/h89-hdos/texas.abs`, each with a 100K H17 disk `texas.h8d` |
-| C64 | ⬜ not yet converted | — | — |
+| Heathkit H89 | ✅ playable (FujiNet Go H89) | `make h89-cpm` (or `h89-hdos`) | `r2r/h89-cpm/texas.com` / `r2r/h89-hdos/texas.abs`, each with a 100K H17 disk `texas.h8d` |
 
 ## What changed from 5 Card Stud
 
@@ -41,19 +42,19 @@ client-side poker rules.
   transitions (single-buffer platforms).
 * Rebranded logos/help; per-platform layout tuned so nothing overlaps the board.
 
-## C client (Apple II, CoCo, MS-DOS, Coleco Adam, ColecoVision, NES, C64)
+## C client (Apple II, CoCo, MS-DOS, Coleco Adam, C64, MSX, H89, ColecoVision, NES)
 
 Shared core in `src/` + per-platform layer in `src/<platform>/`. Toolchains:
 cc65 (Apple II/C64/NES), cmoc (CoCo), OpenWatcom v2 (MS-DOS), z88dk
-(Adam/ColecoVision).
+(Adam/MSX/H89/ColecoVision).
 
 ```bash
 make apple2         # needs cc65, Java + AppleCommander ac/acx CLIs
 make coco-dist      # needs cmoc, lwasm, toolshed decb
-./make-exp msdos    # needs OpenWatcom v2: export WATCOM=...; INCLUDE=$WATCOM/h;
-                    #   PATH=$WATCOM/binl:$PATH  (uses fujinet-lib-experimental)
-./make-exp adam     # needs z88dk WITH Adam EOS support (eos.h/eos.lib - not
-                    #   in upstream z88dk); e.g. `defoogi ./make-exp adam`
+make msdos          # needs OpenWatcom v2: export WATCOM=...; INCLUDE=$WATCOM/h;
+                    #   PATH=$WATCOM/binl:$PATH
+make adam           # needs z88dk WITH Adam EOS support (eos.h/eos.lib - not
+                    #   in upstream z88dk); e.g. `defoogi make adam`
                     #   runs it in the fozztexx/defoogi docker toolchain
 ```
 
@@ -61,9 +62,7 @@ Adam card/frame tiles and the Namco font are generated from the MS-DOS CGA
 master art: `python3 support/tms9918/convert-tiles.py` regenerates
 `src/adam/font.bin` + `src/adam/udg.h` after any `src/msdos/charset.h` change.
 
-The ColecoVision and NES ports are side-ported from fujinet-5cardstud's and
-build against [fujinet-lib-experimental](https://github.com/FozzTexx/fujinet-lib-experimental)
-(its `coleco-target` / `add-nes` branches; pass the checkout as a directory).
+The ColecoVision and NES ports are side-ported from fujinet-5cardstud's.
 The NES has no per-cell colour, so `python3 src/nes/mkchr.py` bakes every
 glyph+colour pair from the ColecoVision font and card art (`src/coleco/font.bin`,
 `udg.h`) into NES tiles; rerun it after changing either. Headless MAME checks
@@ -71,8 +70,8 @@ against a live fujinet-pc: `make coleco-smoke` / `make nes-smoke` (see the
 Makefile for `EXPECT=`/`SCRIPT=`), and `make nes-play` for a window.
 
 The Heathkit H89 port (`src/h89`) runs under both HDOS 2.0 and CP/M 2.2 and talks to the
-H89 FujiNet card (an 8255 at 0xD0) through the `h89-support` branch of
-[fujinet-lib](https://github.com/tschak909/fujinet-lib). It draws everything on the
+H89 FujiNet card (an 8255 at 0xD0) through
+[fujinet-lib](https://github.com/FujiNetWIFI/fujinet-lib). It draws everything on the
 H19 terminal with the H19's own graphics characters and reverse video. The ROM has
 no card suits, so each suit is a 2x2 picture made of triangles and quadrant blocks:
 ♠ ◢◣/▝▘, ♥ ▙▟/◥◤, ♦ ◢◣/◥◤, ♣ ▗▖/●●. Cards are 6x5 with checkerboard backs, and the
@@ -229,10 +228,12 @@ cd <servers-repo>/fujinet-game-system/texasholdem/server
 go run .          # listens on :8080
 ```
 
-Clients default to `http://127.0.0.1:8080/` (the FujiNet device/bridge performs
-the HTTP; a lobby appkey overrides the default when present). Pick a room from
-the table list — the dev rooms (`?table=dev1..dev7`, 1-7 bots) are hidden from
-the list but joinable directly. Different platforms can sit at the same table.
+Clients default to `https://th.carr-designs.com/`; for a local server, use the
+commented-out `http://127.0.0.1:8080/` line in `src/main.c` (the FujiNet
+device/bridge performs the HTTP; a lobby appkey overrides the default when
+present). Pick a room from the table list — the dev rooms (`?table=dev1..dev7`,
+1-7 bots) are hidden from the list but joinable directly. Different platforms
+can sit at the same table.
 
 Host-side test tools (no emulator needed):
 

@@ -65,3 +65,5 @@ atari-fastbasic-version/texas.xex
 
 # Palm desktop test binary
 palm/tests/holdem_test
+
+.claude/

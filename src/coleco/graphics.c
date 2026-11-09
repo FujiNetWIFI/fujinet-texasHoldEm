@@ -35,7 +35,6 @@ extern void myInt(void);
 // z88dk's generic console driver state; see initGraphics().
 extern unsigned char generic_console_flags;
 
-bool always_render_full_cards = 0;
 
 /**
  * @brief Initialize graphics mode; set palette.
