@@ -19,10 +19,7 @@ client-side poker rules.
 | MS-DOS | ✅ playable | `make msdos` | `r2r/msdos/texas.exe` + `texas.img` |
 | Coleco Adam | ✅ playable | `make adam` (needs z88dk) | `r2r/adam/texas.ddp` |
 | C64 | ✅ playable | `make c64` | `r2r/c64/texas.prg` |
-| MSX | 🔨 builds; can't reach FujiNet on FujiNet Go MSX | `make msxrom` | `r2r/msxrom/texas.rom` |
 | Intellivision | ✅ playable | `cd intv && make` | `intv/texas.rom` (jzIntv) + `texas.bin`/`.cfg` (SD via PiRTO II) |
-| ColecoVision | ⏸ not built: needs fujinet-lib's ROM boot API | — | — |
-| NES | ⏸ not built: needs fujinet-lib's ROM boot API | — | — |
 | Bally Astrocade | ✅ playable | `cd astrocade && ./build.sh` | `astrocade/build/texas.bin` (8K FujiNet cart image) |
 | Heathkit H89 | ✅ playable (FujiNet Go H89) | `make h89-cpm` (or `h89-hdos`) | `r2r/h89-cpm/texas.com` / `r2r/h89-hdos/texas.abs`, each with a 100K H17 disk `texas.h8d` |
 
