@@ -1,9 +1,7 @@
 # fujinet-texasHoldEm
 
 Multi-platform 8-bit **Texas Hold 'Em** client for [FujiNet](https://fujinet.online),
-playing against the `texasholdem` server in
-[dillera/servers](https://github.com/dillera/servers)
-(`fujinet-game-system/texasholdem`). Derived from @ericcarrgh's
+playing against the `texasholdem` server Eric's GCP Go Cluster. Derived from @ericcarrgh's
 [fujinet-5cardstud](https://github.com/FujiNetWIFI/fujinet-5cardstud) client, which
 continues separately as the 5 Card Stud game.
 
@@ -21,10 +19,7 @@ client-side poker rules.
 | MS-DOS | ✅ playable | `make msdos` | `r2r/msdos/texas.exe` + `texas.img` |
 | Coleco Adam | ✅ playable | `make adam` (needs z88dk) | `r2r/adam/texas.ddp` |
 | C64 | ✅ playable | `make c64` | `r2r/c64/texas.prg` |
-| MSX | 🔨 builds; can't reach FujiNet on FujiNet Go MSX | `make msxrom` | `r2r/msxrom/texas.rom` |
 | Intellivision | ✅ playable | `cd intv && make` | `intv/texas.rom` (jzIntv) + `texas.bin`/`.cfg` (SD via PiRTO II) |
-| ColecoVision | ✅ playable (MAME) | `make coleco` | `r2r/coleco/texas.rom` (32K FujiNet cart) |
-| NES | ✅ playable (MAME) | `make nes` | `r2r/nes/texas.nes` (NROM FujiNet cart) |
 | Bally Astrocade | ✅ playable | `cd astrocade && ./build.sh` | `astrocade/build/texas.bin` (8K FujiNet cart image) |
 | Heathkit H89 | ✅ playable (FujiNet Go H89) | `make h89-cpm` (or `h89-hdos`) | `r2r/h89-cpm/texas.com` / `r2r/h89-hdos/texas.abs`, each with a 100K H17 disk `texas.h8d` |
 
