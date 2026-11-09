@@ -1,5 +1,5 @@
 PRODUCT = texas
-PLATFORMS = adam apple2 c64 coco coleco h89-cpm h89-hdos msdos msxrom nes
+PLATFORMS = adam apple2 c64 coco coleco h89-cpm h89-hdos model2 msdos msxrom nes
 # No fujinet-lib support for these yet.
 #PLATFORMS += plus4 sms
 # Needs getPlatformKey() and platformNameEntry() in src/lynx.
@@ -101,6 +101,9 @@ H89_APPMAKE ?= z88dk-appmake
 PRODUCT_UPPER = TEXAS
 
 LDFLAGS_EXTRA_APPLE2 = -C src/apple2/apple2-hgr.cfg
+
+# CCP refuses a .COM that reaches past the TPA; the startup zeroes BSS anyway
+LDFLAGS_EXTRA_MODEL2 = -pragma-define:CRT_TRIM_BSS=1
 
 # CoCo 3 build: same sources as CoCo 1/2, compiled with -DCOCO3 for the
 # standard 320x200x16 GIME mode. Framebuffer lives at $8000 via MMU

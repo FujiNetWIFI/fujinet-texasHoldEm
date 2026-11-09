@@ -53,6 +53,10 @@ unsigned char y_bump = 1;
 #define HOW_TO_PLAY_ROW_START 3
 #endif 
 
+#ifndef drawTextCursor
+#define drawTextCursor drawChip
+#endif
+
 unsigned char redrawGameScreen = 0;
 
 /// @brief Convenience function to draw text centered at row Y
@@ -80,38 +84,38 @@ void resetScreenWithBorder() {
 void showHelpScreen() {
   static unsigned char y;
   enableDoubleBuffer();
-  centerStatusText("LOADING INSTRUCTIONS..");
+  centerStatusText(TXT("LOADING INSTRUCTIONS..", "Loading instructions.."));
   drawBuffer();
 
   // This COULD be retrieved from the server, especially if
   // this client were game agnostic.
   resetScreenWithBorder();
   
-  centerText(HOW_TO_PLAY_ROW_START,"HOW TO PLAY TEXAS HOLD'EM");
+  centerText(HOW_TO_PLAY_ROW_START,TXT("HOW TO PLAY TEXAS HOLD'EM", "How to play Texas Hold'em"));
   y=HOW_TO_PLAY_ROW_START+1;
 
   #ifndef SKIP_FIRST_BUMP
   BUMP_LINE
   #endif
                   //12345678901234567890123456789012
-  y++;centerText(y, "2 CARDS EACH, 5 IN THE MIDDLE.");
-  y++;centerText(y, "BEST 5-CARD HAND WINS THE POT.");
+  y++;centerText(y, TXT("2 CARDS EACH, 5 IN THE MIDDLE.", "2 cards each, 5 in the middle."));
+  y++;centerText(y, TXT("BEST 5-CARD HAND WINS THE POT.", "Best 5-card hand wins the pot."));
   y+=2;
 
-  centerText(y, "MOVES");
+  centerText(y, TXT("MOVES", "Moves"));
 
   BUMP_LINE        //12345678901234567890123456789012
-  y++;centerText(y, "FOLD  - QUIT THE HAND     ");BUMP_LINE
-  y++;centerText(y, "CHECK - FREE PASS         ");BUMP_LINE
-  y++;centerText(y, "CALL  - MATCH THE BET     ");BUMP_LINE
-  y++;centerText(y, "RAISE - INCREASE THE BET  ");BUMP_LINE
-  y++;centerText(y, "ALL-IN- BET ALL YOUR CHIPS");
+  y++;centerText(y, TXT("FOLD  - QUIT THE HAND     ", "Fold  - Quit the hand     "));BUMP_LINE
+  y++;centerText(y, TXT("CHECK - FREE PASS         ", "Check - Free pass         "));BUMP_LINE
+  y++;centerText(y, TXT("CALL  - MATCH THE BET     ", "Call  - Match the bet     "));BUMP_LINE
+  y++;centerText(y, TXT("RAISE - INCREASE THE BET  ", "Raise - Increase the bet  "));BUMP_LINE
+  y++;centerText(y, TXT("ALL-IN- BET ALL YOUR CHIPS", "All-in- Bet all your chips"));
 
 /* Lynx has no room for these; every supported platform does. */
 #if HEIGHT >= 20
   y++;             //12345678901234567890123456789012
-  y++;centerText(y, "LEFT/RIGHT PICKS THE MOVE");
-  y++;centerText(y, "UP/DOWN SETS THE AMOUNT  ");
+  y++;centerText(y, TXT("LEFT/RIGHT PICKS THE MOVE", "Left/right picks the move"));
+  y++;centerText(y, TXT("UP/DOWN SETS THE AMOUNT  ", "Up/down sets the amount  "));
 #endif
 
   CLEAR_BUMP
@@ -123,7 +127,7 @@ void showHelpScreen() {
 #elif defined(BUILD_SMS)
   centerStatusText("PRESS 1 TO CONTINUE");
 #else
-  centerStatusText("PRESS A KEY TO CONTINUE");
+  centerStatusText(TXT("PRESS A KEY TO CONTINUE", "Press a key to continue"));
 #endif
 
   drawBuffer();
@@ -180,7 +184,7 @@ bool inputFieldCycle(uint8_t x, uint8_t y, uint8_t max, char* buffer) {
     lastY=y;
     curx = (unsigned char)strlen((char *)buffer);
     drawText(x,y, (const char *)buffer);
-    drawChip(x+curx,y);
+    drawTextCursor(x+curx,y);
   }
    // curx=i;
    // done=0;
@@ -215,7 +219,7 @@ bool inputFieldCycle(uint8_t x, uint8_t y, uint8_t max, char* buffer) {
     }
 
     drawText(x,y, (const char *)buffer);
-    drawChip(x+curx,y);
+    drawTextCursor(x+curx,y);
 
     return done==1;
   }
@@ -233,7 +237,7 @@ void showPlayerNameScreen() {
   drawBuffer();
   disableDoubleBuffer();
   
-  centerText(HEIGHT/2, "ENTER YOUR NAME");
+  centerText(HEIGHT/2, TXT("ENTER YOUR NAME", "Enter your name"));
   drawBox(WIDTH/2-PLAYER_NAME_MAX/2-1,HEIGHT/2+2,PLAYER_NAME_MAX+1,1);
   drawText(WIDTH/2-PLAYER_NAME_MAX/2,HEIGHT/2+3, playerName);
 
@@ -278,7 +282,7 @@ void showWelcomeScreen() {
   welcomeActionVerifyPlayerName();
   welcomeActionVerifyServerDetails();
 
-  strcpy(tempBuffer, "WELCOME ");
+  strcpy(tempBuffer, TXT("WELCOME ", "Welcome "));
   strcat(tempBuffer, playerName);
   centerText(HEIGHT/2,tempBuffer);
   drawBuffer();
@@ -326,15 +330,15 @@ void showTableSelectionScreen() {
 
     if (!skipApiCall) {
       // Show the status immediately before retrival
-      centerStatusText("REFRESHING TABLE LIST..");
+      centerStatusText(TXT("REFRESHING TABLE LIST..", "Refreshing table list.."));
       drawBuffer();
     }
 
     resetScreenWithBorder();
     
-    centerText(3, "CHOOSE A TABLE TO JOIN");
-    drawText(TABLE_LEFT,TABLE_TOP, "TABLE");
-    drawText(TABLE_LEFT+19,TABLE_TOP, "PLAYERS");
+    centerText(3, TXT("CHOOSE A TABLE TO JOIN", "Choose a table to join"));
+    drawText(TABLE_LEFT,TABLE_TOP, TXT("TABLE", "Table"));
+    drawText(TABLE_LEFT+19,TABLE_TOP, TXT("PLAYERS", "Players"));
     drawLine(TABLE_LEFT,TABLE_TOP+1,26);
     
     drawBuffer();
@@ -349,6 +353,12 @@ void showTableSelectionScreen() {
     if (clientState.tables.count>0) {
       for(i=0;i<clientState.tables.count;++i) {
         table = &clientState.tables.table[i];
+#ifdef MIXED_CASE
+        // The server sends table names in lower case
+        for (j=0;table->name[j];++j)
+          if (table->name[j]>='a' && table->name[j]<='z')
+            table->name[j]-=32;
+#endif
         drawText(TABLE_LEFT,TABLE_TOP+2+i*TABLE_ROW_HEIGHT, table->name);
         drawText((unsigned char)(TABLE_LEFT+26-strlen(table->players)), TABLE_TOP+2+i*TABLE_ROW_HEIGHT, table->players);
         
@@ -357,11 +367,13 @@ void showTableSelectionScreen() {
         }
       }
     } else {
-      centerText(12, "NO TABLES ARE AVAILABLE");
+      centerText(12, TXT("NO TABLES ARE AVAILABLE", "No tables are available"));
     }
     
     //drawStatusText(" R+EFRESH  H+ELP  C+OLOR  S+OUND  Q+UIT");
-#if WIDTH>=40
+#if defined(TABLE_HINTS)
+    drawStatusText(TABLE_HINTS);
+#elif WIDTH>=40
     drawStatusText("R-EFRESH   H-ELP  C-OLOR   N-AME   Q-UIT");
 #elif defined(BUILD_COLECO)
     // Keypad, not letters: src/coleco/input.c maps 1-5 onto these shortcuts.
@@ -392,12 +404,14 @@ void showTableSelectionScreen() {
         break;
       } else if (inputKey == 'r' || inputKey =='R') {
         break;
+#ifndef NO_COLOR
       } else if (inputKey == 'c' || inputKey =='C') {
         prefs[PREF_COLOR] = cycleNextColor()+1;
         savePrefs();
         enableDoubleBuffer();
         skipApiCall=1;
         break;
+#endif
         } else if (inputKey == 'n' || inputKey =='N') {
         showPlayerNameScreen();
         break;
@@ -446,7 +460,7 @@ void showTableSelectionScreen() {
   
   }
 
-  centerText(HEIGHT-7, "CONNECTING TO SERVER");
+  centerText(HEIGHT-7, TXT("CONNECTING TO SERVER", "Connecting to server"));
   drawBuffer();
 
   progressAnim(HEIGHT-5);
@@ -553,7 +567,11 @@ void showInGameMenuScreen() {
     x = WIDTH/2-9;
     y = HEIGHT/2-3;
 
+#ifdef NO_COLOR
+    drawBox(x-3,y-2,22,7);
+#else
     drawBox(x-3,y-2,22,9);
+#endif
 #ifdef BUILD_COLECO
     drawText(x,y,    "  5: QUIT TABLE");
     drawText(x,y+=2, "  2: HOW TO PLAY");
@@ -568,11 +586,13 @@ void showInGameMenuScreen() {
     drawText(x,y+=2, "PAUSE: HOW TO PLAY");
     drawText(x,y+=2, "    2: KEEP PLAYING");
 #else
-    drawText(x,y,    "  Q: QUIT TABLE");
-    drawText(x,y+=2, "  H: HOW TO PLAY");
+    drawText(x,y,    TXT("  Q: QUIT TABLE", "  Q: Quit table"));
+    drawText(x,y+=2, TXT("  H: HOW TO PLAY", "  H: How to play"));
+#ifndef NO_COLOR
     drawText(x,y+=2, "  C: COLOR TOGGLE");
+#endif
     //drawText(x,y+=2, "  S: SOUND TOGGLE");
-    drawText(x,y+=2, "ESC: KEEP PLAYING");
+    drawText(x,y+=2, TXT("ESC: KEEP PLAYING", "ESC: Keep playing"));
 #endif
     drawBuffer();
 
@@ -582,12 +602,14 @@ void showInGameMenuScreen() {
     while (i==1) {
       readCommonInput();
       switch (inputKey) {
+#ifndef NO_COLOR
         case 'c':
         case 'C':
             prefs[PREF_COLOR] = cycleNextColor()+1;
             savePrefs();
             i=2;
             break;
+#endif
         case 'h':
         case 'H':
           showHelpScreen();
@@ -598,7 +620,7 @@ void showInGameMenuScreen() {
         case 'q':
         case 'Q':
           resetScreenWithBorder();
-          centerText(10, "PLEASE WAIT");
+          centerText(10, TXT("PLEASE WAIT", "Please wait"));
           drawBuffer();
 
           // Inform server player is leaving

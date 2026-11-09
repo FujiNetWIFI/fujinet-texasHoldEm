@@ -17,6 +17,7 @@
 #include "../sms/vars.h"
 #include "../h89/vars.h"
 #include "../lynx/vars.h"
+#include "../model2/vars.h"
 
 // Platform specific implementations
 unsigned char readJoystick();
